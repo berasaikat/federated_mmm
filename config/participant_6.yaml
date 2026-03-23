@@ -1,0 +1,15 @@
+participant_id: "participant_6"
+industry_vertical: "travel"
+region: "eu"
+channel_descriptions:
+  paid_search: "High-intent branded and generic search campaigns"
+  social: "Prospecting and retargeting on social media platforms"
+  tv: "National programmatic TV buys"
+  ooh: "Digital out-of-home in top DMAs"
+seasonality_pattern: "summer_peak"
+budget_share:
+  paid_search: 0.45
+  social: 0.35
+  tv: 0.15
+  ooh: 0.05
+data_path: "data/participant_6_data.csv"

@@ -1,0 +1,15 @@
+participant_id: "participant_9"
+industry_vertical: "entertainment"
+region: "eu"
+channel_descriptions:
+  paid_search: "High-intent branded and generic search campaigns"
+  social: "Prospecting and retargeting on social media platforms"
+  tv: "National programmatic TV buys"
+  ooh: "Digital out-of-home in top DMAs"
+seasonality_pattern: "event_driven"
+budget_share:
+  paid_search: 0.20
+  social: 0.50
+  tv: 0.10
+  ooh: 0.20
+data_path: "data/participant_9_data.csv"

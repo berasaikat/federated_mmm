@@ -1,0 +1,15 @@
+participant_id: "participant_8"
+industry_vertical: "healthcare"
+region: "na"
+channel_descriptions:
+  paid_search: "High-intent branded and generic search campaigns"
+  social: "Prospecting and retargeting on social media platforms"
+  tv: "National programmatic TV buys"
+  ooh: "Digital out-of-home in top DMAs"
+seasonality_pattern: "uniform"
+budget_share:
+  paid_search: 0.50
+  social: 0.10
+  tv: 0.35
+  ooh: 0.05
+data_path: "data/participant_8_data.csv"

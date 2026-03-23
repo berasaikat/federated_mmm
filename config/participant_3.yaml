@@ -1,0 +1,15 @@
+participant_id: "participant_3"
+industry_vertical: "auto"
+region: "na"
+channel_descriptions:
+  paid_search: "High-intent branded and generic search campaigns"
+  social: "Prospecting and retargeting on social media platforms"
+  tv: "National programmatic TV buys"
+  ooh: "Digital out-of-home in top DMAs"
+seasonality_pattern: "spring_peak"
+budget_share:
+  paid_search: 0.30
+  social: 0.20
+  tv: 0.40
+  ooh: 0.10
+data_path: "data/participant_3_data.csv"

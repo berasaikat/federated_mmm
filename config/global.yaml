@@ -1,0 +1,17 @@
+num_participants: 10
+num_rounds: 5
+channels:
+  - paid_search
+  - social
+  - tv
+  - ooh
+privacy:
+  epsilon: 1.0
+  delta: 1.0e-5
+  noise_multiplier: 1.0
+aggregation:
+  method: "fedavg_posterior"
+llm:
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 2048
+seed: 42

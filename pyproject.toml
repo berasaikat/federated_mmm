@@ -1,0 +1,33 @@
+[project]
+name = "fedarated_mmm"
+version = "0.1.0"
+description = "Federated MMM project"
+requires-python = ">=3.10"
+dependencies = [
+    "numpyro>=0.13",
+    "jax>=0.4",
+    "flwr>=1.7",
+    "torch>=2.2",
+    "opacus>=1.4",
+    "causalpy>=0.4",
+    "pandas>=2.0",
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "matplotlib>=3.8",
+    "pyyaml>=6.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "mypy"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["participants*", "aggregator*", "llm_prior*", "privacy*", "causal_validation*"]
+exclude = ["data*", "config*", "tests*", "visualization*", "results*"]

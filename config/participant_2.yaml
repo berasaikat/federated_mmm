@@ -1,0 +1,15 @@
+participant_id: "participant_2"
+industry_vertical: "finance"
+region: "eu"
+channel_descriptions:
+  paid_search: "High-intent branded and generic search campaigns"
+  social: "Prospecting and retargeting on social media platforms"
+  tv: "National programmatic TV buys"
+  ooh: "Digital out-of-home in top DMAs"
+seasonality_pattern: "uniform"
+budget_share:
+  paid_search: 0.50
+  social: 0.20
+  tv: 0.25
+  ooh: 0.05
+data_path: "data/participant_2_data.csv"
