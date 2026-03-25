@@ -12,4 +12,4 @@ budget_share:
   social: 0.35
   tv: 0.45
   ooh: 0.05
-data_path: "data/participant_4_data.csv"
+data_path: "data/synthetic/participant_4.csv"
