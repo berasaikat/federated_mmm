@@ -27,7 +27,6 @@ def dp_share_posterior(
         participant_id: Absolute numerical ID of the participant executing the share.
         epsilon_per_round: The maximum DP epsilon limit designated per aggregation iteration.
         delta_per_round: The continuous DP delta allocation per iteration.
-        sensitivity: The L2 norm sensitivity bounds calculated over channels count.
         
     Returns:
         The DP-noised posterior summary dictionary with exactly the same shape.

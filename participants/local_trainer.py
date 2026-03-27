@@ -48,6 +48,7 @@ class LocalTrainer:
         extracts the chain logic reliably, and returns the summarized posterior dict.
         """
         spend_matrix, revenue, spend_cols = self.load_data()
+        self.num_observations = len(revenue)
         
         # Safely convert pure numpy objects/float arrays over to JAX primitives for optimization
         spend_jax = jnp.array(spend_matrix)
