@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
+from scipy.optimize import nnls
 import logging
 from typing import List, Dict, Any
 
@@ -34,19 +35,18 @@ def fit_synthetic_control(pre_period_df: pd.DataFrame, treated_geo_id: str, dono
     X_matrix = df_pivot[available_donors].values
     
     # 2. Extract Mathematical Regression 
-    try:
-        from scipy.optimize import nnls
-        # Standard SC best-practice utilizes strictly NNLS to enforce valid causal bounding constraints
-        weights, rnorm = nnls(X_matrix, y_actual)
-    except ImportError:
-        logger.warning("Scipy optimization module unavailable: yielding default bounded OLS resolution array.")
-        # Native pseudo-inverse projection fallback utilizing base NumPy
-        weights, residuals, rank, s = np.linalg.lstsq(X_matrix, y_actual, rcond=None)
-        
-    # Scale bounds iteratively converting structural outputs strictly into sum-to-one constraint format
-    weight_total = np.sum(weights)
-    if weight_total > 0:
-        weights = weights / weight_total
+    # Standard SC best-practice utilizes strictly NNLS to enforce valid causal bounding constraints
+    weights, rnorm = nnls(X_matrix, y_actual)
+
+    y_synth_pre = X_matrix @ weights
+    rmse = float(np.sqrt(np.mean((y_actual - y_synth_pre) ** 2)))
+    r_squared = float(1 - np.sum((y_actual - y_synth_pre)**2) / 
+                        np.sum((y_actual - np.mean(y_actual))**2))
+
+    logger.info(f"Synthetic control pre-period fit — RMSE: {rmse:.2f}, R²: {r_squared:.4f}")
+
+    if r_squared < 0.7:
+        logger.warning(f"Poor pre-period fit (R²={r_squared:.3f}) — ATT estimate may be unreliable")
         
     return {geo_id: float(weight) for geo_id, weight in zip(available_donors, weights)}
 

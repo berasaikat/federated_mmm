@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 from typing import Dict, Any
 
@@ -30,7 +30,7 @@ class ExperimentLogger:
         # Establish deterministic tracking parameters caching the aggregate session counts
         self.summary = {
             "experiment_id": self.experiment_id,
-            "datetime_start": datetime.utcnow().isoformat(),
+            "datetime_start": datetime.now(timezone.utc).isoformat(),
             "metrics": {
                 "total_rounds_logged": 0,
                 "total_priors_elicited": 0,
@@ -47,29 +47,32 @@ class ExperimentLogger:
             # Ensures isolated Numpy constraints successfully collapse uniformly against base JSON bounds `default=float`
             f.write(json.dumps(payload, default=float) + "\n")
 
-    def log_round(self, round_num: int, global_summary: Dict[str, Any], surprise_scores: Dict[str, float], epsilon_spent: float):
+    def log_round(self, round_num: int, global_summary: Dict[str, Any], surprise_scores: Dict[str, float], epsilon_spent_per_participant, num_active_participants, r_hat_summary=None):
         """
         Tracks boundaries capturing mathematical outcomes bridging identical federated rounds sequentially.
         """
+        total_eps = epsilon_spent_per_participant * num_active_participants
         payload = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "round_num": round_num,
             "global_summary": global_summary,
             "surprise_scores": surprise_scores,
-            "epsilon_spent": epsilon_spent
+            "epsilon_spent_per_participant": epsilon_spent_per_participant,
+            "epsilon_spent_total": total_eps,
+            "num_active_participants": num_active_participants,
+            "r_hat_summary": r_hat_summary or {}
         }
         self._append_jsonl(self.rounds_log_path, payload)
-        
         # Increment tracking cache
         self.summary["metrics"]["total_rounds_logged"] += 1
-        self.summary["metrics"]["epsilon_spent_cumulated"] += epsilon_spent
+        self.summary["metrics"]["epsilon_spent_cumulated"] += total_eps
 
     def log_priors(self, round_num: int, participant_id: str, priors_dict: Dict[str, Any]):
         """
         Logs explicitly established generative inferences structured via LLMs mapping exactly to Bayesian MCMC operations.
         """
         payload = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "round_num": round_num,
             "participant_id": str(participant_id),
             "priors": priors_dict
@@ -83,7 +86,7 @@ class ExperimentLogger:
         Logs validations mathematically binding pure causal constraints explicitly derived off true observational divergences.
         """
         payload = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "audit_result": audit_result
         }
         self._append_jsonl(self.audits_log_path, payload)
@@ -94,10 +97,34 @@ class ExperimentLogger:
         """
         Finalizes tracking structurally dumping session accumulations inside an isolated `experiment_summary.json` file.
         """
-        self.summary["datetime_end"] = datetime.utcnow().isoformat()
-        
+        self.summary["datetime_end"] = datetime.now(timezone.utc).isoformat()
+
         target_path = self.base_dir / "experiment_summary.json"
+
+        if target_path.exists():
+            logger.warning(f"Overwriting existing summary at {target_path} — "
+                        f"use a unique experiment_id to avoid this")
+
         with open(target_path, "w") as f:
             json.dump(self.summary, f, indent=4, default=float)
             
         logger.info(f"Analytical pipeline closed successfully: Experiment summary persisted to {target_path.resolve()}")
+
+    def read_rounds(self):
+        """Reads all round logs back as a list of dicts."""
+        if not self.rounds_log_path.exists():
+            return []
+        with open(self.rounds_log_path) as f:
+            return [json.loads(line) for line in f if line.strip()]
+
+    def read_priors(self):
+        if not self.priors_log_path.exists():
+            return []
+        with open(self.priors_log_path) as f:
+            return [json.loads(line) for line in f if line.strip()]
+
+    def read_audits(self):
+        if not self.audits_log_path.exists():
+            return []
+        with open(self.audits_log_path) as f:
+            return [json.loads(line) for line in f if line.strip()]

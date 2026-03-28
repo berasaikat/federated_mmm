@@ -22,15 +22,12 @@ def load_geo_data(participant_data_path: str, geo_metadata_path: str) -> pd.Data
         
     logger.info(f"Loading categorical geo metadata from {geo_metadata_path}")
     df_meta = pd.read_csv(geo_metadata_path)
-        
-    # Pre-flight assertions to ensure structural relational join keys exist
-    if 'geo_id' not in df_data.columns:
-        raise ValueError(f"Missing required relational 'geo_id' column in {participant_data_path}")
-        
-    if 'geo_id' not in df_meta.columns:
-        raise ValueError(f"Missing required relational 'geo_id' column in {geo_metadata_path}")
-        
-    # Merge robustly (left join guarantees mathematical preservation of all active weekly time-series rows)
-    merged_df = pd.merge(df_data, df_meta, on='geo_id', how='left')
+
+    if "geo_id" not in df_data.columns:
+        logger.warning("No 'geo_id' column found — assigning default 'geo_0'")
+        df_data["geo_id"] = "geo_0"
+
+    if "geo_id" not in df_meta.columns:
+        raise ValueError(f"Missing 'geo_id' in metadata: {geo_metadata_path}")
     
-    return merged_df
+    return pd.merge(df_data, df_meta, on="geo_id", how="left")

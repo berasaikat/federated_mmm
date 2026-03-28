@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 def check_convergence(
     prev_global_summary: Dict[str, Dict[str, float]], 
     curr_global_summary: Dict[str, Dict[str, float]], 
-    tol: float = 0.01
+    tol: float = 0.05
 ) -> bool:
     """
     Determines mathematically if the global federated aggregation model has stabilized.
@@ -30,6 +30,7 @@ def check_convergence(
         
     for ch, curr_params in curr_global_summary.items():
         if ch not in prev_global_summary:
+            logger.info(f"New channel '{ch}' detected in round — resetting convergence")
             # Introduction of completely novel variables interrupts immediate convergence mathematical assumptions
             return False
             
@@ -86,8 +87,6 @@ def compute_convergence_metrics(history: List[Dict[str, Dict[str, float]]]) -> D
                 convergence_curves[ch].append(float(relative_change))
             else:
                 # If target parameters were absent dynamically bridging rounds, push explicit `None`s structurally 
-                if len(convergence_curves[ch]) > 0:
-                    # Actually, if we're generating arrays, appending None handles index bounds correctly for graphing
-                    convergence_curves[ch].append(None)
+                convergence_curves[ch].append(None)
                 
     return convergence_curves

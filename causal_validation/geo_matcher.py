@@ -22,6 +22,7 @@ class GeoMatcher:
             self.client = anthropic_client
             
         self.model_name = model_name
+        self._match_cache = {}
 
     def match(self, treated_geo_description: str, candidate_geos_list: List[Dict[str, str]]) -> List[str]:
         """
@@ -38,6 +39,10 @@ class GeoMatcher:
         """
         if not candidate_geos_list:
             return []
+        cache_key = treated_geo_description[:100]  # first 100 chars as key
+        if cache_key in self._match_cache:
+            logger.info("Returning cached geo match result")
+            return self._match_cache[cache_key]
             
         # 1. Intersect Context into the prompt structure
         prompt_parts = [
@@ -110,9 +115,19 @@ class GeoMatcher:
                 ranked_ids = parsed_data["ranked_geo_ids"]
                 if not isinstance(ranked_ids, list):
                     raise ValueError("'ranked_geo_ids' structurally must be a strictly resolved list of Strings.")
+                valid_geo_ids = {c["geo_id"] for c in candidate_geos_list}
+                filtered_ids = [gid for gid in ranked_ids if gid in valid_geo_ids]
+
+                if not filtered_ids:
+                    raise ValueError(
+                        f"LLM returned geo IDs not in candidate list: {ranked_ids}. "
+                        f"Valid IDs: {list(valid_geo_ids)}"
+                    )
                     
                 # Explicitly bound strictly to top 5 exclusively
-                return ranked_ids[:5]
+                result = filtered_ids[:5]
+                self._match_cache[cache_key] = result       
+                return result
                 
             except json.JSONDecodeError as e:
                 last_error = f"Failed to parse LLM valid JSON structure cleanly: {e}"

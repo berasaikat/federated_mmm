@@ -33,6 +33,9 @@ def run_incrementality_audit(
     if not treated_geo_id or not donor_geo_ids:
         raise ValueError("The 'matched_geos' object strictly requires configured 'treated_geo_id' and 'donor_geo_ids' definitions explicitly.")
         
+    mean_revenue = geo_data[geo_data["geo_id"] == treated_geo_id]["revenue"].mean() \
+               if "geo_id" in geo_data.columns else geo_data["revenue"].mean()
+
     # Intelligent Chronological Splits (Extrapolating implicitly over structural timelines natively if explicit columns are missing)
     if "is_treatment_period" in geo_data.columns:
         pre_period_df = geo_data[~geo_data["is_treatment_period"]]
@@ -54,6 +57,8 @@ def run_incrementality_audit(
     
     # 2. Extract structurally modeled Treatment Metrics
     att_estimate = float(inc_res["att"])
+    att_normalized = att_estimate / mean_revenue if mean_revenue > 0 else att_estimate
+
     
     # 3. Harvest analytical constraints directly mapped off our federated model aggregation endpoints
     ch_summary = global_summary.get(channel_to_audit, {})
@@ -66,20 +71,24 @@ def run_incrementality_audit(
         mmm_beta_std = ch_summary.get("std", 0.15)
         
     # Gaussian 90% Bound Z-Scores
-    p5 = ch_summary.get("p5", mmm_beta_mean - 1.645 * mmm_beta_std)
-    p95 = ch_summary.get("p95", mmm_beta_mean + 1.645 * mmm_beta_std)
+    safe_std = mmm_beta_std if mmm_beta_std > 0 else 0.15
+    p5 = ch_summary.get("p5", mmm_beta_mean - 1.645 * safe_std)
+    p95 = ch_summary.get("p95", mmm_beta_mean + 1.645 * safe_std)
     
     mmm_beta_ci = [float(p5), float(p95)]
     
     # 4. Resolve absolute inference gaps identifying whether correlations actually trace independent causality symmetrically
-    coverage = bool(p5 <= att_estimate <= p95)
-    gap = float(att_estimate - mmm_beta_mean)
+    coverage = bool(p5 <= att_normalized <= p95)
+    gap = float(att_normalized - mmm_beta_mean)
     
     audit_result = {
         "channel": channel_to_audit,
         "mmm_beta_mean": float(mmm_beta_mean),
         "mmm_beta_ci": mmm_beta_ci,
-        "att_estimate": att_estimate,
+        "att_estimate_raw": att_estimate, 
+        "att_estimate_normalized": att_normalized,
+        "att_std_err": float(inc_res["std_err"]),
+        "att_p_value": float(inc_res["p_value"]),
         "coverage": coverage,
         "gap": gap
     }
