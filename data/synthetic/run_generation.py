@@ -12,7 +12,7 @@ def load_yaml(filepath: Path) -> dict:
     with open(filepath, "r") as f:
         return yaml.safe_load(f)
 
-def run():
+def run(global_config_path: Path | str | None = None):
     # Resolve the base project directory
     base_dir = Path(__file__).resolve().parent.parent.parent
     config_dir = base_dir / "config"
@@ -22,7 +22,10 @@ def run():
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Load global configs
-    global_config_path = config_dir / "global.yaml"
+    if global_config_path is None:
+        global_config_path = config_dir / "global.yaml"
+    else:
+        global_config_path = Path(global_config_path).resolve()
     if not global_config_path.exists():
         raise FileNotFoundError(f"Global configuration mapped to {global_config_path} was not found.")
         

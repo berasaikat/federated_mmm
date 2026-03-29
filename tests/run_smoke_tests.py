@@ -4,14 +4,37 @@ from pathlib import Path
 
 tests_dir = Path(__file__).parent
 
-# Define phases and their smoke tests in order
+# Define smoke tests in order
 smoke_tests = [
-    ("Phase 3 — MMM",              "smoke_test_phase3.py"),
-    ("Phase 4.1 — Prompt Builder", "smoke_test_phase4_1_prompt_builder.py"),
-    ("Phase 4.2 — Validator",      "smoke_test_phase4_2_validator.py"),
-    ("Phase 4.3 — Surprise",       "smoke_test_phase4_3_surprise.py"),
-    ("Phase 4.4 — API Call",       "smoke_test_phase4_4_api_call.py"),
-    ("Phase 4.5 — Feedback Loop",  "smoke_test_phase4_5_feedback_loop.py"),
+    ("MMM Model",                              "smoke_test_mmm_model.py"),
+    ("Prompt Builder",                         "smoke_test_prompt_construction_1_prompt_builder.py"),
+    ("Validator",                              "smoke_test_prompt_construction_2_validator.py"),
+    ("Surprise",                               "smoke_test_prompt_construction_3_surprise.py"),
+    ("API Call",                               "smoke_test_prompt_construction_4_api_call.py"),
+    ("Feedback Loop",                          "smoke_test_prompt_construction_5_feedback_loop.py"),
+    ("DP Noise - Dependency",                  "smoke_test_dp_noise_1_dependency.py"),
+    ("DP Noise - Sensitivity",                 "smoke_test_dp_noise_2_sensitivity.py"),
+    ("DP Noise - Budget Tracker",              "smoke_test_dp_noise_3_budget_tracker.py"),
+    ("DP Noise - Posterior",                   "smoke_test_dp_noise_4_posterior.py"),
+    ("DP Noise - Statistical Validity",        "smoke_test_dp_noise_5_statistical_validity.py"),
+    ("Aggregator - FedAvg",                    "smoke_test_aggregator_1_fed_avg.py"),
+    ("Aggregator - Hierarchical",              "smoke_test_aggregator_2_hierarchical.py"),
+    ("Aggregator - Round Manager",             "smoke_test_aggregator_3_round_manager.py"),
+    ("Aggregator - Federated Loop 1",          "smoke_test_aggregator_4_fedarated_loop_1.py"),
+    ("Aggregator - Federated Loop 2",          "smoke_test_aggregator_4_fedarated_loop_2.py"),
+    ("Flower - MMM Client",                    "smoke_test_flower_1_MMMClient .py"),
+    ("Flower - LLM Prior",                     "smoke_test_flower_2_llm_prior.py"),
+    ("Flower - Budget",                        "smoke_test_flower_3_budget.py"),
+    ("Flower - Strategy",                      "smoke_test_flower_4_strategy.py"),
+    ("Flower - Full Simulation",               "smoke_test_flower_5_full_simulation.py"),
+    ("Control - Geo Loader",                   "smoke_test_control_1_geo_loader.py"),
+    ("Control - Fit Synthetic",                "smoke_test_control_2_fit_synthetic.py"),
+    ("Control - Estimate Increment",           "smoke_test_control_3_estimate_increment.py"),
+    ("Control - Geo Matcher",                  "smoke_test_control_4_geo_matcher.py"),
+    ("Control - Full Audit",                   "smoke_test_control_5_full_audit.py"),
+    ("Logger - Experiment Logger",             "smoke_test_logger_1_experiment_logger.py"),
+    ("Logger - Convergence",                   "smoke_test_logger_2_convergence.py"),
+    ("Visualization",                          "smoke_test_visualization.py"),
 ]
 
 results = []
