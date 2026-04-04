@@ -31,5 +31,14 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["participants*", "aggregator*", "llm_prior*", "privacy*", "causal_validation*"]
-exclude = ["data*", "config*", "tests*", "visualization*", "results*"]
+include = [
+    "participants*",
+    "aggregator*",
+    "llm_prior*",
+    "privacy*",
+    "causal_validation*",
+    "config*",
+    "data*",
+    "visualization*",
+]
+exclude = ["tests*", "results*"]

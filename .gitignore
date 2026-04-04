@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Keep directory structure but ignore generated files
+results/*.json
+plots/*.png
+logs/
+*.pyc
+.mypy_cache/
+
 # Distribution / packaging
 .Python
 build/

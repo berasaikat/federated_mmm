@@ -1,4 +1,5 @@
 import flwr as fl
+from flwr.client import NumPyClient
 import numpy as np
 import logging
 from typing import Dict, Any, List
@@ -9,7 +10,7 @@ from privacy.budget_tracker import PrivacyBudgetExhausted
 logger = logging.getLogger(__name__)
 
 
-class MMMClient(fl.client.NumPyClient):
+class MMMClient(NumPyClient):
     def __init__(
         self, trainer, budget_tracker, epsilon_per_round: float, delta_per_round: float
     ):

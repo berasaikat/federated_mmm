@@ -1,5 +1,7 @@
 import math
+import logging
 from typing import Dict, Any
+logger = logging.getLogger(__name__)
 
 
 def compute_surprise(
@@ -34,11 +36,23 @@ def compute_surprise(
         mu_post = post_params.get("mean")
         sigma_post = post_params.get("std")
 
-        if None in (mu_prior, sigma_prior, mu_post, sigma_post):
-            logger.warning(
-                f"Skipping surprise for '{ch}' — missing parameters. "
-                f"prior={prior_params}, posterior={post_params}"
-            )
+        # if None in (mu_prior, sigma_prior, mu_post, sigma_post):
+        #     logger.warning(
+        #         f"Skipping surprise for '{ch}' — missing parameters. "
+        #         f"prior={prior_params}, posterior={post_params}"
+        #     )
+        #     continue
+        if mu_prior is None:
+            logger.warning(f"Skipping surprise for '{ch}' — missing mu_prior in prior_dict")
+            continue
+        if sigma_prior is None:
+            logger.warning(f"Skipping surprise for '{ch}' — missing sigma_prior in prior_dict")
+            continue
+        if mu_post is None:
+            logger.warning(f"Skipping surprise for '{ch}' — missing mu_post in posterior_summary")
+            continue
+        if sigma_post is None:
+            logger.warning(f"Skipping surprise for '{ch}' — missing sigma_post in posterior_summary")
             continue
 
         var_post = sigma_post**2

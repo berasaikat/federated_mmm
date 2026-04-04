@@ -1,4 +1,6 @@
 import flwr as fl
+from flwr.client import Client, NumPyClient
+from flwr.simulation import start_simulation
 import os
 import yaml
 import json
@@ -75,7 +77,7 @@ def run_simulation(config_path: str):
     )
 
     # 3. Virtual Node Sandbox mapping `cid` sequential invocations back into participant scope
-    def client_fn(cid: str) -> fl.client.Client:
+    def client_fn(cid: str) -> NumPyClient:
         try:
             p_idx = int(cid)
             p_id = (
@@ -102,7 +104,7 @@ def run_simulation(config_path: str):
             delta_per_round=delta_per_round,
         )
 
-        return client.to_client()
+        return client #.to_client()
 
     # 4. Logging & Configuration Payload Engine overriding custom JSON Dumps
     results_dir = Path("results")
@@ -155,7 +157,7 @@ def run_simulation(config_path: str):
     ray_init_args = {"ignore_reinit_error": True, "num_cpus": os.cpu_count() or 4}
 
     # Initiates iterative background operations and yields the history log directly
-    history = fl.simulation.start_simulation(
+    history = start_simulation(
         client_fn=client_fn,
         num_clients=num_clients,
         config=config_server,

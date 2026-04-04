@@ -1,19 +1,44 @@
+# ── Experiment ─────────────────────────────────────────────────────
 num_participants: 10
 num_rounds: 5
+seed: 42
+
+# ── Channels ───────────────────────────────────────────────────────
 channels:
   - paid_search
   - social
   - tv
   - ooh
+
+# ── Privacy (Differential Privacy via Gaussian Mechanism) ──────────
 privacy:
-  epsilon: 1.0
-  delta: 1.0e-5
-  noise_multiplier: 1.0
+  epsilon: 10.0       # Total DP budget per participant
+  delta: 1.0e-5       # Failure probability (keep < 1/n_weeks)
+
+epsilon_per_round: 0.5   # Consumed per participant per round
+delta_per_round: 1.0e-6
+
+# ── Aggregation ────────────────────────────────────────────────────
 aggregation:
-  method: "fedavg_posterior"
-llm:
-  model: "claude-3-5-sonnet-20241022"
-  max_tokens: 2048
-seed: 42
+  method: fedavg_posterior   # or hierarchical
+shrinkage: 0.5               # Only used with hierarchical
+convergence_tolerance: 0.05  # Relative change threshold
+
+# ── LLM ────────────────────────────────────────────────────────────
+llm_model: claude-sonnet-4-5
+
+# ── Incrementality Audit ───────────────────────────────────────────
 incrementality_audit:
+  geo_csv: data/geo/participant_1_geo.csv
+  matched_geos:
+    treated_geo_id: geo_treated
+    donor_geo_ids: [geo_A, geo_B, geo_C, geo_D]
+  channel: paid_search
+  results_dir: results/
   audit_results_json: results/audit_results.json
+
+# ── Visualization ──────────────────────────────────────────────────
+visualization:
+  results_dir: results/
+  output_dir: plots/
+  experiment_dir: logs/exp_001
