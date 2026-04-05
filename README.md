@@ -4,6 +4,10 @@ Research codebase for **federated media mix modeling (MMM)**: multiple participa
 
 Python **3.10+** is required.
 
+<p align="center">
+  <img src="docs/architecture_w_background.svg" alt="System architecture" width="100%"/>
+</p>
+
 ---
 
 ## Features
