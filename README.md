@@ -1,4 +1,4 @@
-# Federated MMM
+# Federated Media Mix Modeling with LLM-Elicited Priors and Differential Privacy
 
 Research codebase for **federated media mix modeling (MMM)**: multiple participants train local Bayesian MMM-style models, an aggregator combines posteriors (FedAvg-style), **LLM-derived priors** guide each round, and **differential privacy** budgets limit what is shared. **Causal incrementality checks** (synthetic control) help validate channel effects against observational data.
 
